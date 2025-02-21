@@ -1,0 +1,19 @@
+package com.school_project.smart_mirror.repository.admin;
+
+import com.school_project.smart_mirror.domain.admin.Mirror;
+import com.school_project.smart_mirror.domain.admin.User;
+import com.school_project.smart_mirror.dto.admin.CreateMirrorRequestDto;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
+
+@Repository
+public interface UserRepository extends JpaRepository<User, Integer> {
+    boolean existsByUsername(String username);
+
+    @Query(value = "SELECT * FROM mirror_credentials WHERE username = :username", nativeQuery = true)
+    Optional<User> findByUsername(@Param("username") String username);
+}
