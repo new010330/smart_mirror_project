@@ -1,8 +1,6 @@
 package com.school_project.smart_mirror.repository.admin;
 
-import com.school_project.smart_mirror.domain.admin.Mirror;
 import com.school_project.smart_mirror.domain.admin.User;
-import com.school_project.smart_mirror.dto.admin.CreateMirrorRequestDto;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

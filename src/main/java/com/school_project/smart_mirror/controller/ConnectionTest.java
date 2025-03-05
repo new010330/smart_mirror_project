@@ -8,6 +8,6 @@ public class ConnectionTest {
 
     @GetMapping("/hello")
     public String getMain() {
-        return "/main";
+        return "hello";
     }
 }
