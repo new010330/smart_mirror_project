@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -40,21 +42,13 @@ public class NoticeService {
         }
     }
 
-    public NotificationRespDto getNotifications(LocalDate cur_date) {
-        Notice notice = noticeRepository.findAllByNotifications(cur_date);
+    public List<NotificationRespDto> getNotifications() {
+        LocalDate today = LocalDate.now();
+        List<Notice> notice = noticeRepository.findAllByNotifications(today);
 
-        log.info("공백 체크: " + notice.isEmpty());
-//        log.info(notice.getTitle());
-//        log.info(NotificationRespDto.builder().title(notice.getTitle()).toString());
-
-
-        return NotificationRespDto.builder()
-                .title(notice.getTitle())
-                .content(notice.getContent())
-                .locationName(notice.getLocation_name())
-                .startDate(notice.getStart_date())
-                .endDate(notice.getEnd_date())
-                .build();
+        return notice.stream()
+                .map(NotificationRespDto::noticeToDto)  // 정적 팩토리 메서드 활용
+                .collect(Collectors.toList());
 
     }
 

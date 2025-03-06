@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -28,11 +29,10 @@ public class NotificationController {
 
     @GetMapping("/notification")
     public ResponseEntity<?> getNotification() {
-        LocalDate curDate = LocalDate.now();
-        NotificationRespDto noticeRespDto = noticeService.getNotifications(curDate);
-
-        log.info(noticeRespDto.getTitle());
-
+        List<NotificationRespDto> noticeRespDto = noticeService.getNotifications();
+        if(noticeRespDto.isEmpty()) {
+            log.info("공지사항이 없습니다.");
+        }
         return ResponseEntity.ok().body(new CMRespDto<>(201, "notice get success", noticeRespDto));
     }
 

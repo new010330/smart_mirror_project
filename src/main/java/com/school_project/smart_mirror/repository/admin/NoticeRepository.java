@@ -7,11 +7,13 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface NoticeRepository extends JpaRepository<Notice, Integer> {
 
+//    List<Notice> findByEndDateLessThanEqual(LocalDate date);
     @Query("SELECT n FROM Notice n WHERE n.end_date <= :currentDate ORDER BY n.start_date ASC")
-    Optional<Notice> findAllByNotifications(@Param("currentDate") LocalDate currentDate);
+    List<Notice> findAllByNotifications(@Param("currentDate") LocalDate currentDate);
 }
