@@ -2,20 +2,98 @@ server:
   port: 8888
 
 spring:
+  # JPA 및 MySQL 설정
   jpa:
-    show-sql: true  # SQL ?? ??
+    show-sql: true
     hibernate:
-      ddl-auto: update  # ??? ?? ??
+      ddl-auto: update
     properties:
       hibernate:
-        format_sql: true  # SQL ???
+        format_sql: true
+    defer-datasource-initialization: true
+
   datasource:
     url: jdbc:mysql://localhost:3306/smart_mirror_db?serverTimezone=UTC&characterEncoding=UTF-8
     username: root
     password: 1234
     driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+      idle-timeout: 30000
+      connection-timeout: 20000
 
+  jackson:
+    serialization:
+      write-dates-as-timestamps: true
+
+  # Elasticsearch 설정
+  elasticsearch:
+    username: elastic
+    password: 8OMCMxAC_HEJtBtMdRwZ
+    uris: https://localhost:9200
+
+
+  # 캐싱 설정
+  cache:
+    type: caffeine
+    caffeine:
+      spec: maximumSize=500,expireAfterAccess=600s
+
+# 로깅 설정
 logging:
   level:
-    org.hibernate.SQL: DEBUG
-    org.hibernate.type.descriptor.sql.BasicBinder: TRACE  # ???? ?? ???
+    org.hibernate.SQL: debug
+    org.hibernate.type.descriptor.sql: trace
+    org.springframework.data.elasticsearch: debug
+    org.elasticsearch: warn
+    org.springframework.security=DEBUG:
+    org.elasticsearch.client: debug
+
+## 액추에이터 설정 (모니터링용, 필요시)
+#management:
+#  endpoints:
+#    web:
+#      exposure:
+#        include: health,info,metrics
+#  endpoint:
+#    health:
+#      show-details: when-authorized
+
+## 애플리케이션 커스텀 속성 (필요시)
+#app:
+#  face-recognition:
+#    similarity-threshold: 0.75
+#    vector-dimension: 128
+
+#server:
+#  port: 8888
+#
+#spring:
+#  jpa:
+#    show-sql: true  # SQL ?? ??
+#    hibernate:
+#      ddl-auto: update  # ??? ?? ??
+#    properties:
+#      hibernate:
+#        format_sql: true
+#        highlight_sql: true
+#    defer-datasource-initialization: true
+#  datasource:
+#    url: jdbc:mysql://localhost:3306/smart_mirror_db?serverTimezone=UTC&characterEncoding=UTF-8
+#    username: root
+#    password: 1234
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#
+#  data:
+#    elasticsearch:
+#      repositories:
+#        enabled: true
+#      uris: localhost:9200
+#      connection-timeout: 3s
+#      socket-timeout: 45s
+#
+#logging:
+#  level:
+#    org.hibernate.SQL: debug
+#    org.hibernate.orm.jdbc.bind: trace

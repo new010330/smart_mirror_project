@@ -1,11 +1,13 @@
 package com.school_project.smart_mirror.service.admin;
 
+import com.school_project.smart_mirror.auth.JwtUtil;
+import com.school_project.smart_mirror.dto.admin.auth.LoginRespDto;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import com.school_project.smart_mirror.domain.admin.Mirror;
 import com.school_project.smart_mirror.domain.admin.User;
-import com.school_project.smart_mirror.dto.admin.UserInfoRequestDto;
-import com.school_project.smart_mirror.dto.admin.UserAuthRequestDto;
-import com.school_project.smart_mirror.dto.admin.UserInfoRespDto;
+import com.school_project.smart_mirror.dto.admin.auth.UserInfoRequestDto;
+import com.school_project.smart_mirror.dto.admin.auth.UserAuthRequestDto;
+import com.school_project.smart_mirror.dto.admin.auth.UserInfoRespDto;
 import com.school_project.smart_mirror.exception.CustomValidationApiException;
 import com.school_project.smart_mirror.repository.admin.MirrorRepository;
 import com.school_project.smart_mirror.repository.admin.UserRepository;
@@ -27,6 +29,8 @@ public class UserService {
     private final UserRepository userRepository;
     private final MirrorRepository mirrorRepository;
     private final PasswordEncoder passwordEncoder;
+
+    private final JwtUtil jwtUtil;
 
     @Transactional
     public boolean addUser(UserInfoRequestDto mirrorRequestDto) {
@@ -66,28 +70,18 @@ public class UserService {
         }
     }
 
-    public UserInfoRespDto login(UserAuthRequestDto request) {
+    public LoginRespDto login(UserAuthRequestDto request) {
         User user = userRepository.findByUsername(request.getUsername())
                 .orElseThrow(() -> new CustomValidationApiException("사용자를 찾을 수 없습니다.") {});
         log.info("userGET: " + user.getMirror_id());
 
-        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new CustomValidationApiException("비밀번호가 일치하지 않습니다.") {};
+        if (passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            String accessToken = jwtUtil.generateAccessToken(user.getUsername());
+            String refreshToken = jwtUtil.generateRefreshToken(user.getUsername());
+            return new LoginRespDto(accessToken, refreshToken);
+        }else {
+            throw new CustomValidationApiException("비밀번호가 일치하지 않습니다.");
         }
-
-        Mirror mirror = mirrorRepository.findById(user.getMirror_id())
-                .orElseThrow(() -> new CustomValidationApiException("Mirror 정보를 찾을 수 없습니다.") {});
-
-        log.info("location_name: " + mirror.getLocation_name());
-
-        // 3. 로그인 성공 시 사용자 정보 반환
-        return UserInfoRespDto.builder()
-                .locationName(mirror.getLocation_name())
-                .latitude(mirror.getLatitude())
-                .longitude(mirror.getLongitude())
-                .features(mirror.getFeatures())
-                .username(user.getUsername())
-                .build();
     }
 
     public UserInfoRespDto getUserInfo(String username) {

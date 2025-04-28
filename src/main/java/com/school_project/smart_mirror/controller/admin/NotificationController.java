@@ -1,15 +1,14 @@
 package com.school_project.smart_mirror.controller.admin;
 
 import com.school_project.smart_mirror.dto.CMRespDto;
-import com.school_project.smart_mirror.dto.admin.NotificationRequestDto;
-import com.school_project.smart_mirror.dto.admin.NotificationRespDto;
+import com.school_project.smart_mirror.dto.admin.notification.NotificationRequestDto;
+import com.school_project.smart_mirror.dto.admin.notification.NotificationRespDto;
 import com.school_project.smart_mirror.service.admin.NoticeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Slf4j
@@ -20,6 +19,7 @@ public class NotificationController {
 
 
     @PostMapping("/notification")
+    @CrossOrigin(origins = "*", methods = RequestMethod.POST)
     public ResponseEntity<?> addNotification(@RequestBody NotificationRequestDto notificationRequestDto) {
         log.info("controller check");
         boolean status = noticeService.addNotice(notificationRequestDto);
@@ -28,6 +28,7 @@ public class NotificationController {
     }
 
     @GetMapping("/notification")
+    @CrossOrigin(origins = "*", methods = RequestMethod.GET)
     public ResponseEntity<?> getNotification() {
         List<NotificationRespDto> noticeRespDto = noticeService.getNotifications();
         if(noticeRespDto.isEmpty()) {

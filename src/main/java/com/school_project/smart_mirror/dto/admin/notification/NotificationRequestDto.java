@@ -1,4 +1,4 @@
-package com.school_project.smart_mirror.dto.admin;
+package com.school_project.smart_mirror.dto.admin.notification;
 
 import jakarta.persistence.Column;
 import lombok.*;

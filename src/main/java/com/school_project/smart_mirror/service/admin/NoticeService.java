@@ -1,8 +1,8 @@
 package com.school_project.smart_mirror.service.admin;
 
 import com.school_project.smart_mirror.domain.admin.Notice;
-import com.school_project.smart_mirror.dto.admin.NotificationRequestDto;
-import com.school_project.smart_mirror.dto.admin.NotificationRespDto;
+import com.school_project.smart_mirror.dto.admin.notification.NotificationRequestDto;
+import com.school_project.smart_mirror.dto.admin.notification.NotificationRespDto;
 import com.school_project.smart_mirror.repository.admin.NoticeRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j

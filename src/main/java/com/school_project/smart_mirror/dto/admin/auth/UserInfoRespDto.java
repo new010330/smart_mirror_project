@@ -1,4 +1,4 @@
-package com.school_project.smart_mirror.dto.admin;
+package com.school_project.smart_mirror.dto.admin.auth;
 
 import com.school_project.smart_mirror.domain.admin.Mirror;
 import lombok.Builder;
