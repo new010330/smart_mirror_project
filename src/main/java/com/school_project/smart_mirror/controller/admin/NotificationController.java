@@ -14,12 +14,12 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api/admin")
 public class NotificationController {
     private final NoticeService noticeService;
 
 
     @PostMapping("/notification")
-    @CrossOrigin(origins = "*", methods = RequestMethod.POST)
     public ResponseEntity<?> addNotification(@RequestBody NotificationRequestDto notificationRequestDto) {
         log.info("controller check");
         boolean status = noticeService.addNotice(notificationRequestDto);
@@ -28,7 +28,6 @@ public class NotificationController {
     }
 
     @GetMapping("/notification")
-    @CrossOrigin(origins = "*", methods = RequestMethod.GET)
     public ResponseEntity<?> getNotification() {
         List<NotificationRespDto> noticeRespDto = noticeService.getNotifications();
         if(noticeRespDto.isEmpty()) {

@@ -13,6 +13,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -25,6 +27,9 @@ public class FaceSearchService {
     private final float similarityThreshold = 0.97f;  // 임계값 설정 (0.0-1.0 사이 값)
 
     public Face searchSimilarFaces(List<Float> queryVector, long k) throws Exception {
+
+        // 시작 시간 측정
+        long startTime = System.currentTimeMillis();
         try {
             SearchResponse<Face> response = esClient.search(s -> s
                             .index("users")
@@ -55,14 +60,25 @@ public class FaceSearchService {
                 Face user = results.get().source();
                 log.info("유사한 얼굴을 찾았습니다. 사용자 ID: {}, 유사도: {}\n\n",
                         user.getId(), results.get().score());
+
+                // 종료 시간 측정 및 소요 시간 계산
+                long endTime = System.currentTimeMillis();
+                long executionTime = endTime - startTime;
+                log.info("(조회)얼굴 인식 처리 시간: {}ms\n\n", executionTime);
                 return user;
             } else {
                 // 일치하는 얼굴 없음, 새 사용자 등록
                 log.info("유사한 얼굴을 찾을 수 없어 새로 등록합니다.\n\n");
                 String newUserId = UUID.randomUUID().toString();
                 Face newFace = registerFace(newUserId, queryVector);
+
+                // 종료 시간 측정 및 소요 시간 계산
+                long endTime = System.currentTimeMillis();
+                long executionTime = endTime - startTime;
+                log.info("(등록)얼굴 인식 처리 시간: {}ms", executionTime);
                 return newFace;
             }
+
 //            // 결과가 없으면 자동 등록
 //            if (results.isEmpty()) {
 //                log.info("유사한 얼굴을 찾을 수 없어 새로 등록합니다.");

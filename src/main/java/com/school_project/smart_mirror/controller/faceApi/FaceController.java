@@ -43,7 +43,6 @@ public class FaceController {
 
 
     @PostMapping("/homes/usercheck")
-    @CrossOrigin(origins = "*", methods = RequestMethod.POST)
     public ResponseEntity<?> searchSimilarFaces(@RequestBody Map<Integer, Float> request) {
         try {
             log.info("얼굴 검색 요청 수신");

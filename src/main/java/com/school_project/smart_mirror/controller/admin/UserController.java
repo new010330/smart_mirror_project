@@ -19,8 +19,13 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
     private final UserService userService;
 
+    @GetMapping("/usercheck")
+    public ResponseEntity<String> getCheckUser() {
+        log.info("check");
+        return ResponseEntity.ok("관리자 페이지 접속");
+    }
+
     @PostMapping("/users/register")
-    @CrossOrigin(origins = "*", methods = RequestMethod.POST)
     public ResponseEntity<?> addUser(@RequestBody @Valid UserInfoRequestDto mirrorRequestDto) {
         boolean status = userService.addUser(mirrorRequestDto);
 
@@ -29,11 +34,11 @@ public class UserController {
     }
 
     @PostMapping("/users/login")
-    @CrossOrigin(origins = "*", methods = RequestMethod.POST)
     public ResponseEntity<?> login(@RequestBody @Valid UserAuthRequestDto request) {
         log.info("check");
         try {
             LoginRespDto tokens = userService.login(request);
+            log.info("토큰: " + tokens.toString());
             return ResponseEntity.ok().body(new CMRespDto<>(1, "로그인 성공", tokens));
         } catch (Exception e) {
             return ResponseEntity.badRequest()
@@ -42,7 +47,6 @@ public class UserController {
     }
 
     @GetMapping("/users/{username}")
-    @CrossOrigin(origins = "*", methods = RequestMethod.GET)
     public ResponseEntity<?> getUserInfo(@PathVariable("username") String username) {
         try {
             UserInfoRespDto userInfo = userService.getUserInfo(username);
@@ -54,7 +58,6 @@ public class UserController {
     }
 
     @PutMapping("/users")
-    @CrossOrigin(origins = "*", methods = RequestMethod.PUT)
     public ResponseEntity<?> editUserInfo(@RequestBody UserInfoRequestDto userInfoReqDto) {
         boolean status = userService.updateUserInfo(userInfoReqDto);
 
@@ -62,7 +65,6 @@ public class UserController {
     }
 
     @DeleteMapping("users/{username}")
-    @CrossOrigin(origins = "*", methods = RequestMethod.DELETE)
     public ResponseEntity<?> deleteUser(@PathVariable("username") String username) {
         boolean status = userService.deleteUser(username);
 
